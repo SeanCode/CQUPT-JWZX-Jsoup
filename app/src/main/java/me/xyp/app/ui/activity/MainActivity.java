@@ -1,9 +1,11 @@
-package me.xyp.app;
+package me.xyp.app.ui.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -25,27 +27,19 @@ import java.io.UnsupportedEncodingException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.xyp.app.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @Bind(R.id.toolbar)
+    @Bind(R.id.main_toolbar)
     Toolbar toolbar;
-
-    @Bind(R.id.main_text)
-    TextView textView;
 
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
 
     @Bind(R.id.nav_view)
     NavigationView navigationView;
-
-    @OnClick(R.id.fab)
-    void onFabClicked(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,21 +58,9 @@ public class MainActivity extends AppCompatActivity
                 try {
                     Log.wtf(this.getClass().getSimpleName(), "test jsoup");
                     final Document doc = Jsoup.connect("http://jwzx.inner.redrock-team.com/index.php").get();
-                    Log.wtf(this.getClass().getSimpleName(), doc.title());
-                    Looper.prepare();
-                    textView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            String s = null;
-                            try {
-                                s = new String(doc.title().getBytes("gb2312"), "gb2312");
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                            textView.setText(s);
-                        }
-                    });
-                    Looper.loop();
+                    String s = new String(doc.title().getBytes("gb2312"), "gb2312");
+                    Log.wtf(this.getClass().getSimpleName(), s);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -95,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
     }
 
     @Override
@@ -139,6 +121,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
 
         }
 
