@@ -2,7 +2,7 @@ package me.xyp.app.ui.fragment;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +12,11 @@ import me.xyp.app.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StudentInfoFragment extends Fragment {
+public class CourseFragment extends Fragment {
 
+    public static final String BUNDLE_KEY = "WEEK_NUM";
 
-    public StudentInfoFragment() {
+    public CourseFragment() {
         // Required empty public constructor
     }
 
@@ -24,7 +25,7 @@ public class StudentInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student_info, container, false);
+        return inflater.inflate(R.layout.fragment_course, container, false);
     }
 
 }

@@ -9,6 +9,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">登录</string>
+    <string name="title_activity_training_plan">培养方案</string>
+    <string name="title_activity_student_info">学籍信息</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -22,4 +24,27 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+
+    <string-array name="titles_weeks">
+        <item>整学期</item>
+        <item>第一周</item>
+        <item>第二周</item>
+        <item>第三周</item>
+        <item>第四周</item>
+        <item>第五周</item>
+        <item>第六周</item>
+        <item>第七周</item>
+        <item>第八周</item>
+        <item>第九周</item>
+        <item>第十周</item>
+        <item>第十一周</item>
+        <item>第十二周</item>
+        <item>第十三周</item>
+        <item>第十四周</item>
+        <item>第十五周</item>
+        <item>第十六周</item>
+        <item>第十七周</item>
+        <item>第十八周</item>
+    </string-array>
 </resources>

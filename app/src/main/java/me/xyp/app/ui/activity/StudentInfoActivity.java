@@ -7,12 +7,12 @@ import android.view.MenuItem;
 
 import me.xyp.app.R;
 
-public class TrainingPlanActivity extends BaseActivity {
+public class StudentInfoActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_training_plan);
+        setContentView(R.layout.activity_student_info);
         initView();
     }
 
