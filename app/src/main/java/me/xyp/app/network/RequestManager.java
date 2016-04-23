@@ -9,6 +9,8 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.concurrent.TimeUnit;
 
 import io.rx_cache.internal.RxCache;
@@ -22,6 +24,7 @@ import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -66,28 +69,26 @@ public enum RequestManager {
         builder.cookieJar(cookieJar);
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
 
-//        CookieInterceptor interceptor = new CookieInterceptor();
-//        interceptor.setLevel(CookieInterceptor.Level.HEADERS);
-//        builder.addInterceptor(interceptor);
+        //debug
+        if (BuildConfig.DEBUG) {
+            builder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.99.165", 8888)));
+        }
+        CookieInterceptor interceptor = new CookieInterceptor();
+        builder.addInterceptor(interceptor);
+
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            builder.addInterceptor(logging);
+        }
 
         return builder.build();
     }
 
     public void index(Subscriber<String> subscriber) {
-        Observable<String> observable = jwzxService.index().map(responseBody -> {
-            try {
-                String s = responseBody.string();
-
-                String title = Jsoup.parse(s).title();
-                title = new String(title.getBytes("GB2312"), "GB2312");
-                Log.wtf("--->index", "-->> " + title);
-
-                return title;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return "";
-        });
+        Observable<String> observable = jwzxService.index()
+                .map(new ResponseBodyParseFunc())
+                .map(s -> Jsoup.parse(s).title());
         emitObservable(observable, subscriber);
     }
 
@@ -102,5 +103,18 @@ public enum RequestManager {
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s);
+    }
+
+    private static class ResponseBodyParseFunc implements Func1<ResponseBody, String> {
+
+        @Override
+        public String call(ResponseBody responseBody) {
+            try {
+                return new String(responseBody.bytes(), "gb2312");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
     }
 }

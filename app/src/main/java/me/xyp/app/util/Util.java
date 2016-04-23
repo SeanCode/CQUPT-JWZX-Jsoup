@@ -187,7 +187,7 @@ public class Util {
     }
 
     public static void toast(Context context, String content) {
-        Toast toast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(context.getApplicationContext(), content, Toast.LENGTH_SHORT);
         toast.show();
     }
 

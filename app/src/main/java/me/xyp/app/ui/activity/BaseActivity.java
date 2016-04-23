@@ -6,8 +6,10 @@ import android.os.Bundle;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import me.xyp.app.event.LoginEvent;
+import me.xyp.app.util.Util;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -28,8 +30,10 @@ public class BaseActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoginEvent(LoginEvent event) {
+        Util.toast(this, "身份验证过期，请重新登录");
+        this.finish();
         startActivity(new Intent(this, LoginActivity.class));
     }
 

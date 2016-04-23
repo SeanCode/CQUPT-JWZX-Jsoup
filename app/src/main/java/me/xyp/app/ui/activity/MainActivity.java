@@ -1,25 +1,17 @@
 package me.xyp.app.ui.activity;
 
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,34 +47,14 @@ public class MainActivity extends BaseActivity
     }
 
     private void testJsoup() {
-
         RequestManager.getInstance().index(new SimpleSubscriber<>(this, new SubscriberListener<String>() {
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-            }
 
             @Override
             public void onNext(String s) {
-
-                Util.toast(MainActivity.this, "title: " + s);
+                Util.toast(MainActivity.this, s);
             }
+
         }));
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Log.wtf(this.getClass().getSimpleName(), "test jsoup");
-                    final Document doc = Jsoup.connect("http://jwzx.inner.redrock-team.com/index.php").get();
-                    String s = new String(doc.title().getBytes("gb2312"), "gb2312");
-                    Log.w(this.getClass().getSimpleName(), s);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     private void initView() {
@@ -164,8 +136,9 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.nav_send) {//培养方案
             startActivity(new Intent(this, TrainingPlanActivity.class));
-        } else if (id == R.id.nav_share) {//设置
-
+        } else if (id == R.id.nav_share) {//退出
+            this.finish();
+            startActivity(new Intent(this, LoginActivity.class));
         }
 
         drawer.closeDrawer(GravityCompat.START);
