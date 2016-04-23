@@ -1,5 +1,8 @@
 package me.xyp.app.ui.activity;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -28,6 +32,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.xyp.app.R;
+import me.xyp.app.ui.fragment.CourseContainerFragment;
+import me.xyp.app.ui.fragment.ExamScheduleFragment;
+import me.xyp.app.ui.fragment.GradeFragment;
+import me.xyp.app.ui.fragment.StudentInfoFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -80,6 +88,10 @@ public class MainActivity extends AppCompatActivity
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
     }
 
+    private void updateTitle(String title) {
+        toolbar.setTitle(title);
+    }
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -111,19 +123,35 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        Fragment fragment = null;
+        switch (id) {
+            case R.id.nav_camera:
+                fragment = new CourseContainerFragment();
+                updateTitle("学生课表");
+                break;
+            case R.id.nav_gallery:
+                fragment = new StudentInfoFragment();
+                updateTitle("学籍信息");
+                break;
+            case R.id.nav_slideshow:
+                fragment = new ExamScheduleFragment();
+                updateTitle("考试安排");
+                break;
+            case R.id.nav_manage:
+                fragment = new GradeFragment();
+                updateTitle("考试成绩");
+                break;
+            case R.id.nav_share:
+                break;
+            case R.id.nav_send:
+                break;
+            default:
+                break;
+        }
+        if (fragment != null) {
+            FragmentManager manager = getFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.main_container, fragment).commit();
         }
 
         drawer.closeDrawer(GravityCompat.START);
