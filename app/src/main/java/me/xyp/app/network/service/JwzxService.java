@@ -3,7 +3,9 @@ package me.xyp.app.network.service;
 import me.xyp.app.config.Const;
 import okhttp3.ResponseBody;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -20,6 +22,12 @@ public interface JwzxService {
 
     @GET(Const.LOGIN)
     Observable<ResponseBody> login();
+
+    @FormUrlEncoded
+    @POST(Const.LOGIN)
+    Observable<ResponseBody> loginWithForm(@Field("id") String stuNum,
+                                           @Field("psw") String psw,
+                                           @Field("validationCode") String code);
 
     @GET(Const.PUBLIC_STU_COURSE_SCHEDULE)
     Observable<ResponseBody> pubStuCourseSchedule(@Field("xh") String xh);

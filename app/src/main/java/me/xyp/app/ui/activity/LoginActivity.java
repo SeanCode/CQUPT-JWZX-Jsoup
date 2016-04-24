@@ -1,11 +1,15 @@
 package me.xyp.app.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
+import com.orhanobut.logger.Logger;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -13,11 +17,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.xyp.app.R;
 import me.xyp.app.config.Const;
+import me.xyp.app.model.Result;
 import me.xyp.app.network.RequestManager;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
 import me.xyp.app.util.Util;
 
+//FIXME fix code image when code is invalid because of timeout
 public class LoginActivity extends AppCompatActivity {
 
     @Bind(R.id.login_stu_num_edit_text)
@@ -62,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onNext(String s) {
 
                 //show code image
-                picasso.load(Const.END_POINT_JWZX + Const.VCODE).into(codeImage);
+                loadCodeToImage();
                 Util.toast(LoginActivity.this, "请登录");
             }
         }));
@@ -75,7 +81,26 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        RequestManager.getInstance().loginWithForm(stuNumEditText.getText().toString(),
+                passwordEditText.getText().toString(),
+                codeEditText.getText().toString(),
+                new SimpleSubscriber<>(this, true, false, new SubscriberListener<Result>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        loadCodeToImage();
+                        Logger.d("load new code image");
+                    }
 
+                    @Override
+                    public void onNext(Result result) {
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    }
+                }));
+    }
+
+    private void loadCodeToImage() {
+        picasso.load(Const.END_POINT_JWZX + Const.VCODE).memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE).into(codeImage);
     }
 
     @Override

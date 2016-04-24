@@ -23,8 +23,10 @@ import me.xyp.app.config.Const;
 import me.xyp.app.model.Course;
 import me.xyp.app.model.Exam;
 import me.xyp.app.model.Grade;
+import me.xyp.app.model.Result;
 import me.xyp.app.model.Student;
 import me.xyp.app.model.TrainingPlan;
+import me.xyp.app.network.exception.LoginFailException;
 import me.xyp.app.network.service.JwzxService;
 import me.xyp.app.network.setting.CacheProviders;
 import me.xyp.app.network.setting.CookieCheckInterceptor;
@@ -119,6 +121,32 @@ public enum RequestManager {
         emitObservable(observable, subscriber);
     }
 
+    public void loginWithForm(String stuNum, String psw, String code, Subscriber<Result> subscriber) {
+        Observable<Result> observable = jwzxService.loginWithForm(stuNum, psw, code)
+                .map(new ResponseBodyParseFunc())
+                .map(html -> {
+                    /**
+                     * <SCRIPT LANGUAGE='JavaScript'>alert("xx同学,您好!登录成功!这是您第【160】次登录教务在线!感谢您一直以来的对教务在线关注!") ;location.href='index.php';</SCRIPT>
+                     *
+                     * <SCRIPT LANGUAGE='JavaScript'>alert("验证码错误或者已经过了有效时间!请您重新登录!");history.go(-1);</SCRIPT>
+                     *
+                     * <SCRIPT LANGUAGE='JavaScript'>alert("你输入的密码有误,请核实!");history.go(-1);</SCRIPT>
+                     *
+                     * return a string 你输入的密码有误,请核实! / xx同学,您好.... / 验证码错误或者已经过...
+                     */
+                    String s = Jsoup.parse(html).select("SCRIPT").first().html();
+                    s = s.substring(7, s.indexOf(")") - 1);
+                    if (s.startsWith("你")) {
+                        throw new LoginFailException(LoginFailException.CODE_PASSWORD_WRONG, s);
+                    } else if (s.startsWith("验")) {
+                        throw new LoginFailException(LoginFailException.CODE_VCODE_INVALID, s);
+                    }
+                    return new Result(0, s);
+                });
+
+        emitObservable(observable, subscriber);
+    }
+
     public void getPublicStudentCourseSchedule(String stuNum, Subscriber<List<Course>> subscriber) {
         Observable<List<Course>> observable = jwzxService.pubStuCourseSchedule(stuNum)
                 .map(new ResponseBodyParseFunc())
@@ -187,11 +215,23 @@ public enum RequestManager {
 
     private static class ResponseBodyParseFunc implements Func1<ResponseBody, String> {
 
+        private boolean shouldLogContent;
+
+        public ResponseBodyParseFunc() {
+            this(false);
+        }
+
+        public ResponseBodyParseFunc(boolean shouldLogContent) {
+            this.shouldLogContent = shouldLogContent;
+        }
+
         @Override
         public String call(ResponseBody responseBody) {
             try {
                 String html = new String(responseBody.bytes(), "gb2312");
-                Logger.xml(html);
+                if (shouldLogContent) {
+                    Logger.xml(html);
+                }
                 return html;
             } catch (IOException e) {
                 e.printStackTrace();
