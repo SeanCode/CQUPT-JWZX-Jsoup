@@ -1,4 +1,4 @@
-package me.xyp.app.network;
+package me.xyp.app.network.setting;
 
 /**
  * Created by cc on 16/4/23.

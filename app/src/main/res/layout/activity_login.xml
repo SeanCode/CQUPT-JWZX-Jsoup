@@ -13,13 +13,13 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_stu_num">
 
-            <AutoCompleteTextView
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/login_stu_num_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_stu_num"
                 android:inputType="number"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -27,13 +27,13 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_password">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/login_password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_password"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
@@ -62,8 +62,10 @@
 
             <ImageView
                 android:id="@+id/login_code_image"
-                android:layout_width="64dp"
-                android:layout_height="16dp"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:scaleType="fitXY"
+                android:layout_gravity="center"
                 android:src="@mipmap/ic_launcher" />
         </LinearLayout>
 

@@ -32,7 +32,11 @@ public class BaseActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoginEvent(LoginEvent event) {
-        Util.toast(this, "身份验证过期，请重新登录");
+
+        if (event.type == LoginEvent.TYPE.COOKIE_INVALID) {
+            Util.toast(this, "身份验证过期，请重新登录");
+        }
+
         this.finish();
         startActivity(new Intent(this, LoginActivity.class));
     }

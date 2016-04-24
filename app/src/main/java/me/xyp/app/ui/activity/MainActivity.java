@@ -13,9 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.xyp.app.R;
+import me.xyp.app.event.LoginEvent;
 import me.xyp.app.network.RequestManager;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
@@ -128,6 +131,7 @@ public class MainActivity extends BaseActivity
             default:
                 break;
         }
+
         if (fragment != null) {
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
@@ -138,7 +142,7 @@ public class MainActivity extends BaseActivity
             startActivity(new Intent(this, TrainingPlanActivity.class));
         } else if (id == R.id.nav_share) {//退出
             this.finish();
-            startActivity(new Intent(this, LoginActivity.class));
+            EventBus.getDefault().post(new LoginEvent(LoginEvent.TYPE.NO_COOKIE));
         }
 
         drawer.closeDrawer(GravityCompat.START);
