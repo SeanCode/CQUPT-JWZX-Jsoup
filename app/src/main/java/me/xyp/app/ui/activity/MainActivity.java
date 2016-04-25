@@ -70,6 +70,7 @@ public class MainActivity extends BaseActivity
                 if (s != null) {
                     stuNameTextView.setText(s.name);
                     stuNumTextView.setText(s.stuNum);
+                    testJsoup();
 //                    loadAvatar(s.stuNum);
                 }
             }

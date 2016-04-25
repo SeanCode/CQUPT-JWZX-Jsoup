@@ -24,22 +24,22 @@
             <TextView
                 android:id="@+id/student_info_name_text_view"
                 style="@style/studentInfoTextView"
-                android:text="姓名：同学" />
+                android:text="姓名：" />
 
             <TextView
                 android:id="@+id/student_info_num_text_view"
                 style="@style/studentInfoTextView"
-                android:text="学号：2012121212" />
+                android:text="学号：" />
 
             <TextView
                 android:id="@+id/student_info_class_text_view"
                 style="@style/studentInfoTextView"
-                android:text="班级：1301212" />
+                android:text="班级：" />
 
             <TextView
                 android:id="@+id/student_info_gender_text_view"
                 style="@style/studentInfoTextView"
-                android:text="性别：女" />
+                android:text="性别：" />
 
         </LinearLayout>
 
@@ -60,14 +60,14 @@
             android:id="@+id/student_info_birthday_text_view"
             style="@style/studentInfoTextView"
             android:layout_weight="1"
-            android:text="生日：19930101" />
+            android:text="生日：" />
 
         <TextView
             android:id="@+id/student_info_college_text_view"
             style="@style/studentInfoTextView"
             android:layout_weight="1"
             android:ellipsize="end"
-            android:text="学院：软件工程学院" />
+            android:text="分院：" />
 
     </LinearLayout>
 
@@ -80,14 +80,14 @@
             android:id="@+id/student_info_major_text_view"
             style="@style/studentInfoTextView"
             android:layout_weight="1"
-            android:text="专业：软件工程" />
+            android:text="专业：" />
 
         <TextView
             android:id="@+id/student_info_major_period_text_view"
             style="@style/studentInfoTextView"
             android:layout_weight="1"
             android:ellipsize="end"
-            android:text="学制：4年" />
+            android:text="学制：" />
 
     </LinearLayout>
 
@@ -100,7 +100,7 @@
             android:id="@+id/student_info_grade_text_view"
             style="@style/studentInfoTextView"
             android:layout_weight="1"
-            android:text="当前所在级：2012" />
+            android:text="当前所在级：" />
 
         <TextView
             android:id="@+id/student_info_major_kind_text_view"
