@@ -1,12 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="me.xyp.app.ui.activity.StudentInfoActivity">
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/student_info_name_text_view"
+                style="@style/studentInfoTextView"
+                android:text="姓名：同学" />
+
+            <TextView
+                android:id="@+id/student_info_num_text_view"
+                style="@style/studentInfoTextView"
+                android:text="学号：2012121212" />
+
+            <TextView
+                android:id="@+id/student_info_class_text_view"
+                style="@style/studentInfoTextView"
+                android:text="班级：1301212" />
+
+            <TextView
+                android:id="@+id/student_info_gender_text_view"
+                style="@style/studentInfoTextView"
+                android:text="性别：女" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/student_info_avatar_image_view"
+            android:layout_width="80dp"
+            android:layout_height="107dp"
+            android:layout_gravity="center|right"
+            android:layout_marginRight="20dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/student_info_birthday_text_view"
+            style="@style/studentInfoTextView"
+            android:layout_weight="1"
+            android:text="生日：19930101" />
+
+        <TextView
+            android:id="@+id/student_info_college_text_view"
+            style="@style/studentInfoTextView"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:text="学院：软件工程学院" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/student_info_major_text_view"
+            style="@style/studentInfoTextView"
+            android:layout_weight="1"
+            android:text="专业：软件工程" />
+
+        <TextView
+            android:id="@+id/student_info_major_period_text_view"
+            style="@style/studentInfoTextView"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:text="学制：4年" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/student_info_grade_text_view"
+            style="@style/studentInfoTextView"
+            android:layout_weight="1"
+            android:text="当前所在级：2012" />
+
+        <TextView
+            android:id="@+id/student_info_major_kind_text_view"
+            style="@style/studentInfoTextView"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:text="专业类别：" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -16,6 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.xyp.app.R;
+import me.xyp.app.config.Config;
 import me.xyp.app.config.Const;
 import me.xyp.app.model.Result;
 import me.xyp.app.network.RequestManager;
@@ -81,7 +82,8 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        RequestManager.getInstance().loginWithForm(stuNumEditText.getText().toString(),
+        String stuNum = stuNumEditText.getText().toString();
+        RequestManager.getInstance().loginWithForm(stuNum,
                 passwordEditText.getText().toString(),
                 codeEditText.getText().toString(),
                 new SimpleSubscriber<>(this, true, false, new SubscriberListener<Result>() {
@@ -94,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(Result result) {
+//                        Util.set(LoginActivity.this, Config.SP_KEY_STU_NUM, stuNum);
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     }
                 }));

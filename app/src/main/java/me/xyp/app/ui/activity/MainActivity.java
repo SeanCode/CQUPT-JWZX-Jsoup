@@ -15,7 +15,10 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.orhanobut.logger.Logger;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,6 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.xyp.app.R;
+import me.xyp.app.config.Const;
 import me.xyp.app.event.LoginEvent;
 import me.xyp.app.model.Student;
 import me.xyp.app.network.RequestManager;
@@ -49,6 +53,8 @@ public class MainActivity extends BaseActivity
     TextView stuNameTextView;
     TextView stuNumTextView;
 
+    Picasso picasso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +73,14 @@ public class MainActivity extends BaseActivity
                 if (s != null) {
                     stuNameTextView.setText(s.name);
                     stuNumTextView.setText(s.stuNum);
+//                    loadAvatar(s.stuNum);
                 }
             }
         }));
+    }
+
+    private void loadAvatar(String stuNum) {
+        picasso.load(Const.END_POINT_JWZX + Const.STU_PIC + stuNum.substring(3)).into(avatarImageView);
     }
 
     private void testJsoup() {
@@ -104,6 +115,9 @@ public class MainActivity extends BaseActivity
         itemDefault.setChecked(true);
 
         onNavigationItemSelected(itemDefault);
+
+        picasso = new Picasso.Builder(this).downloader(new OkHttp3Downloader(RequestManager.getInstance().getOkHttpClient())).build();
+
     }
 
     private void updateTitle(String title) {

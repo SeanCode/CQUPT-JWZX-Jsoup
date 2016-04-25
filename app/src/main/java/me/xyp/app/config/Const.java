@@ -11,7 +11,6 @@ public class Const {
 
     public static final String LOGIN = "login.php";
 
-    //Api
     public static final String VCODE = "createValidationCode.php";
 
     public static final String PUBLIC_STU_COURSE_SCHEDULE = "pubStuKebiao.php";
@@ -27,6 +26,8 @@ public class Const {
     public static final String STU_GRADE = "showQmCj.php";
 
     public static final String STU_INFO = "showUserInfo.php";
+
+    public static final String STU_PIC = "showstuPic.php?xh=";
 
     public static final String TRAINING_PLAN_LIST = "docTreeIndex.php?dirId=000303";
 
