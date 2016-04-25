@@ -172,7 +172,30 @@ public enum RequestManager {
 
         Observable<List<Exam>> observable = responseBodyObservable
                 .map(new ResponseBodyParseFunc())
-                .map(html -> null);//todo parse
+                .map(html -> {
+                    Elements tables = Jsoup.parse(html).getElementsByTag("table");
+                    Element tableParent = tables.get(2);
+                    Elements tds = tableParent.getElementsByTag("td");
+                    List<Exam> list = new ArrayList<>();
+                    Elements trs = tds.select("tr");
+                    trs.remove(0);
+                    for (Element tr : trs) {
+                        Elements examElement = tr.getElementsByTag("td");
+                        if (examElement.size() == 8) {
+                            Exam exam = new Exam(
+                                    examElement.get(0).text().substring(1),
+                                    examElement.get(1).text().substring(1),
+                                    examElement.get(2).text().substring(1),
+                                    examElement.get(3).text().substring(1),
+                                    examElement.get(4).text().substring(1),
+                                    examElement.get(5).text().substring(1),
+                                    examElement.get(6).text().substring(1),
+                                    examElement.get(7).text().substring(1));
+                            list.add(exam);
+                        }
+                    }
+                    return list;
+                });
 
         emitObservable(observable, subscriber);
     }

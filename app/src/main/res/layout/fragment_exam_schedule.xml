@@ -1,13 +1,13 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="me.xyp.app.ui.fragment.ExamScheduleFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/exam_schedule_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="exam schedule" />
+        android:layout_height="match_parent" />
 
-</FrameLayout>
+</LinearLayout>

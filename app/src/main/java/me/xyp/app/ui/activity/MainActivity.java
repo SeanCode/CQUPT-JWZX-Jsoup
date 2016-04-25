@@ -16,9 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
-import com.orhanobut.logger.Logger;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,7 +30,7 @@ import me.xyp.app.network.RequestManager;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
 import me.xyp.app.ui.fragment.CourseContainerFragment;
-import me.xyp.app.ui.fragment.ExamScheduleFragment;
+import me.xyp.app.ui.fragment.ExamContainerFragment;
 import me.xyp.app.ui.fragment.GradeFragment;
 import me.xyp.app.util.Util;
 
@@ -162,7 +159,7 @@ public class MainActivity extends BaseActivity
                 updateTitle("学生课表");
                 break;
             case R.id.nav_slideshow:
-                fragment = new ExamScheduleFragment();
+                fragment = new ExamContainerFragment();
                 updateTitle("考试安排");
                 break;
             case R.id.nav_manage:

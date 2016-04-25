@@ -16,7 +16,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.xyp.app.R;
-import me.xyp.app.config.Config;
 import me.xyp.app.config.Const;
 import me.xyp.app.model.Result;
 import me.xyp.app.network.RequestManager;
@@ -97,7 +96,9 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onNext(Result result) {
 //                        Util.set(LoginActivity.this, Config.SP_KEY_STU_NUM, stuNum);
+                        LoginActivity.this.finish();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
                     }
                 }));
     }
