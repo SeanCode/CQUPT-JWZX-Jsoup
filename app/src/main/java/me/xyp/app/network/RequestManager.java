@@ -7,12 +7,14 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.orhanobut.logger.Logger;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +22,7 @@ import io.rx_cache.internal.RxCache;
 import me.xyp.app.APP;
 import me.xyp.app.BuildConfig;
 import me.xyp.app.config.Const;
+import me.xyp.app.event.LoginEvent;
 import me.xyp.app.model.Course;
 import me.xyp.app.model.Exam;
 import me.xyp.app.model.Grade;
@@ -84,9 +87,9 @@ public enum RequestManager {
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
 
         //debug
-        if (BuildConfig.DEBUG) {
-            builder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.99.165", 8888)));
-        }
+//        if (BuildConfig.DEBUG) {
+//            builder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.99.165", 8888)));
+//        }
         CookieCheckInterceptor interceptor = new CookieCheckInterceptor();
         builder.addInterceptor(interceptor);
 
@@ -116,14 +119,28 @@ public enum RequestManager {
 
     public void login(Subscriber<String> subscriber) {
         Observable<String> observable = jwzxService.login()
-                .map(new ResponseBodyParseFunc())
+                .map(responseBody -> {
+                    try {
+                        return new String(responseBody.bytes(), "gb2312");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return "";
+                })
                 .map(html -> Jsoup.parse(html).title());
         emitObservable(observable, subscriber);
     }
 
     public void loginWithForm(String stuNum, String psw, String code, Subscriber<Result> subscriber) {
         Observable<Result> observable = jwzxService.loginWithForm(stuNum, psw, code)
-                .map(new ResponseBodyParseFunc())
+                .map(responseBody -> {
+                    try {
+                        return new String(responseBody.bytes(), "gb2312");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return "";
+                })
                 .map(html -> {
                     /**
                      * <SCRIPT LANGUAGE='JavaScript'>alert("xx同学,您好!登录成功!这是您第【160】次登录教务在线!感谢您一直以来的对教务在线关注!") ;location.href='index.php';</SCRIPT>
@@ -187,7 +204,26 @@ public enum RequestManager {
     public void getStudentInfo(Subscriber<Student> subscriber) {
         Observable<Student> observable = jwzxService.studentInfo()
                 .map(new ResponseBodyParseFunc())
-                .map((Func1<String, Student>) html -> null);//todo parse
+                .map(html -> {
+                    if (html == null) {
+                        return null;
+                    }
+                    Elements tables = Jsoup.parse(html).getElementsByTag("table");
+                    Element tableParent = tables.get(2);
+                    Elements tds = tableParent.getElementsByTag("td");
+                    String basicInfo = tds.select("p").html();
+                    String[] basic = basicInfo.split(" 】【 ");
+                    List<String> list = new ArrayList<>();
+                    list.addAll(Arrays.asList(basic));
+                    Elements trs = tds.select("td");
+                    trs.remove(0);
+
+                    for (Element e : trs) {
+                        list.add(e.text());
+                    }
+
+                    return Student.getStudentFromElements(list);
+                });
 
         emitObservable(observable, subscriber);
     }
@@ -231,6 +267,15 @@ public enum RequestManager {
                 String html = new String(responseBody.bytes(), "gb2312");
                 if (shouldLogContent) {
                     Logger.xml(html);
+                }
+                Element table = Jsoup.parse(html).select("table").get(2);
+                String tableText = table.select("td").text();
+                if (shouldLogContent) {
+                    Logger.xml(tableText);
+                }
+                if (tableText.startsWith("教务在线登录")) {
+                    EventBus.getDefault().post(new LoginEvent(LoginEvent.TYPE.COOKIE_INVALID));
+                    return null;
                 }
                 return html;
             } catch (IOException e) {

@@ -48,6 +48,7 @@ public class CookieCheckInterceptor implements Interceptor {
             if (headers.get("Set-Cookie") != null) {
                 Log.e("OKHttp$Interceptor", "Request without cookie and get new cookie, go to login");
                 EventBus.getDefault().post(new LoginEvent(LoginEvent.TYPE.NO_COOKIE));
+
             }
         }
 

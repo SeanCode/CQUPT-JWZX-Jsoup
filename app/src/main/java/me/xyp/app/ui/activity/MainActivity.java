@@ -12,6 +12,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.xyp.app.R;
 import me.xyp.app.event.LoginEvent;
+import me.xyp.app.model.Student;
 import me.xyp.app.network.RequestManager;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
@@ -39,6 +44,10 @@ public class MainActivity extends BaseActivity
     @Bind(R.id.nav_view)
     NavigationView navigationView;
 
+    ImageView avatarImageView;
+    TextView stuNameTextView;
+    TextView stuNumTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +55,19 @@ public class MainActivity extends BaseActivity
         ButterKnife.bind(this);
 
         initView();
-        testJsoup();
+        attemptGetStuInfo();
+    }
+
+    private void attemptGetStuInfo() {
+
+        RequestManager.getInstance().getStudentInfo(new SimpleSubscriber<>(this, new SubscriberListener<Student>() {
+            @Override
+            public void onNext(Student s) {
+                if (s != null) {
+                    Logger.d(s.toString());
+                }
+            }
+        }));
     }
 
     private void testJsoup() {
@@ -72,6 +93,10 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         navigationView.getHeaderView(0).setOnClickListener(v -> startActivity(new Intent(MainActivity.this, StudentInfoActivity.class)));
+
+        avatarImageView = (ImageView) navigationView.findViewById(R.id.nav_avatar_image_view);
+        stuNameTextView = (TextView) navigationView.findViewById(R.id.nav_stu_name_text_view);
+        stuNumTextView = (TextView) navigationView.findViewById(R.id.nav_stu_num_text_view);
 
         MenuItem itemDefault = navigationView.getMenu().getItem(0);
         itemDefault.setChecked(true);
