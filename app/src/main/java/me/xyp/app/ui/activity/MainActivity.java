@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.orhanobut.logger.Logger;
+import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -64,7 +65,8 @@ public class MainActivity extends BaseActivity
             @Override
             public void onNext(Student s) {
                 if (s != null) {
-                    Logger.d(s.toString());
+                    stuNameTextView.setText(s.name);
+                    stuNumTextView.setText(s.stuNum);
                 }
             }
         }));
@@ -94,9 +96,9 @@ public class MainActivity extends BaseActivity
 
         navigationView.getHeaderView(0).setOnClickListener(v -> startActivity(new Intent(MainActivity.this, StudentInfoActivity.class)));
 
-        avatarImageView = (ImageView) navigationView.findViewById(R.id.nav_avatar_image_view);
-        stuNameTextView = (TextView) navigationView.findViewById(R.id.nav_stu_name_text_view);
-        stuNumTextView = (TextView) navigationView.findViewById(R.id.nav_stu_num_text_view);
+        avatarImageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_avatar_image_view);
+        stuNameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_stu_name_text_view);
+        stuNumTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_stu_num_text_view);
 
         MenuItem itemDefault = navigationView.getMenu().getItem(0);
         itemDefault.setChecked(true);

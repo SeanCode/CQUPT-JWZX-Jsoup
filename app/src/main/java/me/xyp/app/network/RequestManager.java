@@ -119,28 +119,14 @@ public enum RequestManager {
 
     public void login(Subscriber<String> subscriber) {
         Observable<String> observable = jwzxService.login()
-                .map(responseBody -> {
-                    try {
-                        return new String(responseBody.bytes(), "gb2312");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return "";
-                })
+                .map(new ResponseBodyParseFunc(false, false))
                 .map(html -> Jsoup.parse(html).title());
         emitObservable(observable, subscriber);
     }
 
     public void loginWithForm(String stuNum, String psw, String code, Subscriber<Result> subscriber) {
         Observable<Result> observable = jwzxService.loginWithForm(stuNum, psw, code)
-                .map(responseBody -> {
-                    try {
-                        return new String(responseBody.bytes(), "gb2312");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return "";
-                })
+                .map(new ResponseBodyParseFunc(false, false))
                 .map(html -> {
                     /**
                      * <SCRIPT LANGUAGE='JavaScript'>alert("xx同学,您好!登录成功!这是您第【160】次登录教务在线!感谢您一直以来的对教务在线关注!") ;location.href='index.php';</SCRIPT>
@@ -252,13 +238,19 @@ public enum RequestManager {
     private static class ResponseBodyParseFunc implements Func1<ResponseBody, String> {
 
         private boolean shouldLogContent;
+        private boolean shouldParseHtml;
 
         public ResponseBodyParseFunc() {
-            this(false);
+            this(false, true);
+        }
+
+        public ResponseBodyParseFunc(boolean shouldLogContent, boolean shouldParseHtml) {
+            this.shouldLogContent = shouldLogContent;
+            this.shouldParseHtml = shouldParseHtml;
         }
 
         public ResponseBodyParseFunc(boolean shouldLogContent) {
-            this.shouldLogContent = shouldLogContent;
+            this(shouldLogContent, true);
         }
 
         @Override
@@ -268,15 +260,18 @@ public enum RequestManager {
                 if (shouldLogContent) {
                     Logger.xml(html);
                 }
-                Element table = Jsoup.parse(html).select("table").get(2);
-                String tableText = table.select("td").text();
-                if (shouldLogContent) {
-                    Logger.xml(tableText);
+                if (shouldParseHtml) {
+                    Element table = Jsoup.parse(html).select("table").get(2);
+                    String tableText = table.select("td").text();
+                    if (shouldLogContent) {
+                        Logger.xml(tableText);
+                    }
+                    if (tableText.startsWith("教务在线登录")) {
+                        EventBus.getDefault().post(new LoginEvent(LoginEvent.TYPE.COOKIE_INVALID));
+                        return null;
+                    }
                 }
-                if (tableText.startsWith("教务在线登录")) {
-                    EventBus.getDefault().post(new LoginEvent(LoginEvent.TYPE.COOKIE_INVALID));
-                    return null;
-                }
+
                 return html;
             } catch (IOException e) {
                 e.printStackTrace();
