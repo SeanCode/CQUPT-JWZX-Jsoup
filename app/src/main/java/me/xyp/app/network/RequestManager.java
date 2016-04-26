@@ -154,10 +154,10 @@ public enum RequestManager {
         emitObservable(observable, subscriber);
     }
 
-    public void getGradeList(boolean shouldReturnAll, Subscriber<List<Grade>> subscriber) {
+    public void getGradeList(boolean shouldReturnAll, Subscriber<Grade> subscriber) {
         Observable<ResponseBody> responseBodyObservable = shouldReturnAll ? jwzxService.gradleListAll() : jwzxService.gradeList();
 
-        Observable<List<Grade>> observable = responseBodyObservable
+        Observable<Grade> observable = responseBodyObservable
                 .map(new ResponseBodyParseFunc())
                 .map(new GradeListHtmlParseFunc());
 

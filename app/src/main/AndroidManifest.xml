@@ -31,6 +31,7 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,13 +41,16 @@
         </activity>
         <activity
             android:name=".ui.activity.TrainingPlanActivity"
-            android:label="@string/title_activity_training_plan" />
+            android:label="@string/title_activity_training_plan"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".ui.activity.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".ui.activity.StudentInfoActivity"
-            android:label="@string/title_activity_student_info" />
+            android:label="@string/title_activity_student_info"
+            android:launchMode="singleInstance" />
     </application>
 
 </manifest>
