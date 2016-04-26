@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by cc on 16/4/26.
  */
-public class Article extends ArticleBaic {
+public class Article extends ArticleBasic {
 
     public String contentHtml;
     public List<Attachment> attachmentList;

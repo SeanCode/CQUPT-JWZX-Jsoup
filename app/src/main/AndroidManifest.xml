@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.TrainingPlanActivity"
+            android:name=".ui.activity.ArticleListActivity"
             android:label="@string/title_activity_training_plan"
             android:launchMode="singleInstance" />
         <activity
@@ -51,6 +51,8 @@
             android:name=".ui.activity.StudentInfoActivity"
             android:label="@string/title_activity_student_info"
             android:launchMode="singleInstance" />
+
+        <activity android:name=".ui.activity.ArticleContentActivity" />
     </application>
 
 </manifest>

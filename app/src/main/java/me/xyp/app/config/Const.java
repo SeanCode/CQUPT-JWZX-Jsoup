@@ -29,7 +29,7 @@ public class Const {
 
     public static final String STU_PIC = "showstuPic.php?xh=";
 
-    public static final String ARTICLE_LIST = "docTreeIndex.php";
+    public static final String ARTICLE_LIST = "pubFileList.php";
 
     public static final String ARTICLE_CONTENT = "showfilecontent.php";
 

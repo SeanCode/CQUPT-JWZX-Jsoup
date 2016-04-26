@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp">
+
+    <TextView
+        android:id="@+id/item_article_title_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/body_text_1"
+        android:textSize="18sp"
+        tools:text="本科专业培养方案(2014年新增及修订)" />
+
+    <TextView
+        android:id="@+id/item_article_time_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_article_title_text_view"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/body_text_3"
+        android:textSize="14sp"
+        tools:text="01/08/2015" />
+
+    <TextView
+        android:id="@+id/item_article_read_num_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_article_title_text_view"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@id/item_article_time_text_view"
+        android:gravity="end"
+        android:textColor="@color/body_text_2"
+        android:textSize="16sp"
+        tools:text="阅读数：16576" />
+
+</RelativeLayout>

@@ -14,7 +14,7 @@ import me.xyp.app.APP;
 import me.xyp.app.BuildConfig;
 import me.xyp.app.config.Const;
 import me.xyp.app.model.Article;
-import me.xyp.app.model.ArticleBaic;
+import me.xyp.app.model.ArticleBasic;
 import me.xyp.app.model.Course;
 import me.xyp.app.model.Exam;
 import me.xyp.app.model.Grade;
@@ -167,9 +167,9 @@ public enum RequestManager {
         emitObservable(observable, subscriber);
     }
 
-    public void getTrainingPlanList(Subscriber<List<ArticleBaic>> subscriber) {
-        Observable<List<ArticleBaic>> observable = jwzxService.articleList(Const.TRAINING_ARTICLE_LIST_DIR_ID)
-                .map(new ResponseBodyParseFunc())
+    public void getArticleList(String dirId, Subscriber<List<ArticleBasic>> subscriber) {
+        Observable<List<ArticleBasic>> observable = jwzxService.articleList(dirId)
+                .map(new ResponseBodyParseFunc(true, false))
                 .map(new ArticleListHtmlParseFunc());
 
         emitObservable(observable, subscriber);

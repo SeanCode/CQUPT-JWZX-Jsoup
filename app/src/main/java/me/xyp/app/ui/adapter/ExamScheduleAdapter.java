@@ -20,10 +20,6 @@ public class ExamScheduleAdapter extends RecyclerView.Adapter<ExamScheduleAdapte
 
     private List<Exam> list;
 
-    public ExamScheduleAdapter(List<Exam> list) {
-        this.list = list;
-    }
-
     public void setList(List<Exam> list) {
         this.list = list;
         this.notifyDataSetChanged();
@@ -58,7 +54,7 @@ public class ExamScheduleAdapter extends RecyclerView.Adapter<ExamScheduleAdapte
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list == null ? 0 : list.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

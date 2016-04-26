@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import me.xyp.app.BuildConfig;
 import me.xyp.app.component.task.progress.ProgressCancelListener;
@@ -57,6 +58,8 @@ public class SimpleSubscriber<T> extends Subscriber<T> implements ProgressCancel
             Toast.makeText(context, "网络中断，请检查您的网络状态", Toast.LENGTH_SHORT).show();
         } else if (e instanceof ConnectException) {
             Toast.makeText(context, "网络异常，请检查您的网络状态", Toast.LENGTH_SHORT).show();
+        } else if (e instanceof UnknownHostException) {
+            Toast.makeText(context, "网络异常，无法连接教务在线", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
         }

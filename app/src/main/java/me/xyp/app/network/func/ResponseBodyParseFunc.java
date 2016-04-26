@@ -30,7 +30,7 @@ public class ResponseBodyParseFunc implements Func1<ResponseBody, String> {
     }
 
     public ResponseBodyParseFunc(boolean shouldReturnRawHtml) {
-        this(shouldReturnRawHtml, true);
+        this(shouldReturnRawHtml, false);
     }
 
     @Override

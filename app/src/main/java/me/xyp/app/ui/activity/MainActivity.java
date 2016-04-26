@@ -178,7 +178,7 @@ public class MainActivity extends BaseActivity
         }
 
         if (id == R.id.nav_send) {//培养方案
-            startActivity(new Intent(this, TrainingPlanActivity.class));
+            ArticleListActivity.startActivityWithDirId(MainActivity.this, Const.TRAINING_ARTICLE_LIST_DIR_ID);
         } else if (id == R.id.nav_share) {//退出
             this.finish();
             EventBus.getDefault().post(new LoginEvent(LoginEvent.TYPE.NO_COOKIE));

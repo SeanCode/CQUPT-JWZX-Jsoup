@@ -35,8 +35,6 @@ public class ExamScheduleFragment extends Fragment {
     @Bind(R.id.exam_schedule_recycler_view)
     RecyclerView recyclerView;
 
-    ArrayList<Exam> exams = new ArrayList<>();
-
     ExamScheduleAdapter adapter;
 
     public ExamScheduleFragment() {
@@ -69,7 +67,7 @@ public class ExamScheduleFragment extends Fragment {
     }
 
     private void initView() {
-        adapter = new ExamScheduleAdapter(exams);
+        adapter = new ExamScheduleAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);

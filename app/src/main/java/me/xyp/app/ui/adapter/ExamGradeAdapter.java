@@ -22,10 +22,6 @@ public class ExamGradeAdapter extends RecyclerView.Adapter<ExamGradeAdapter.View
 
     private List<Grade.ChildGrade> list;
 
-    public ExamGradeAdapter(List<Grade.ChildGrade> list) {
-        this.list = list;
-    }
-
     public void setList(List<Grade.ChildGrade> list) {
         this.list = list;
         notifyDataSetChanged();
