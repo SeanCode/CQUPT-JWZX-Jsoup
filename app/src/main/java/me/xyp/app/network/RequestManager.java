@@ -13,18 +13,14 @@ import io.rx_cache.internal.RxCache;
 import me.xyp.app.APP;
 import me.xyp.app.BuildConfig;
 import me.xyp.app.config.Const;
+import me.xyp.app.model.Article;
+import me.xyp.app.model.ArticleBaic;
 import me.xyp.app.model.Course;
 import me.xyp.app.model.Exam;
 import me.xyp.app.model.Grade;
 import me.xyp.app.model.Result;
 import me.xyp.app.model.Student;
-import me.xyp.app.model.TrainingPlan;
-import me.xyp.app.network.func.CourseTableHtmlParseFunc;
-import me.xyp.app.network.func.ExamScheduleHtmlParseFunc;
-import me.xyp.app.network.func.GradeListHtmlParseFunc;
-import me.xyp.app.network.func.LoginResultHtmlParseFunc;
-import me.xyp.app.network.func.ResponseBodyParseFunc;
-import me.xyp.app.network.func.StudentInfoHtmlParseFunc;
+import me.xyp.app.network.func.*;
 import me.xyp.app.network.service.JwzxService;
 import me.xyp.app.network.setting.CacheProviders;
 import me.xyp.app.network.setting.CookieCheckInterceptor;
@@ -36,7 +32,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -172,10 +167,18 @@ public enum RequestManager {
         emitObservable(observable, subscriber);
     }
 
-    public void getTrainingPlanList(Subscriber<List<TrainingPlan>> subscriber) {
-        Observable<List<TrainingPlan>> observable = jwzxService.trainingPlanList()
+    public void getTrainingPlanList(Subscriber<List<ArticleBaic>> subscriber) {
+        Observable<List<ArticleBaic>> observable = jwzxService.articleList(Const.TRAINING_ARTICLE_LIST_DIR_ID)
                 .map(new ResponseBodyParseFunc())
-                .map((Func1<String, List<TrainingPlan>>) html -> null);//todo parse
+                .map(new ArticleListHtmlParseFunc());
+
+        emitObservable(observable, subscriber);
+    }
+
+    public void getArticleContent(String id, Subscriber<Article> subscriber) {
+        Observable<Article> observable = jwzxService.articleContent(id)
+                .map(new ResponseBodyParseFunc())
+                .map(new ArticleContentHtmlParseFunc());
 
         emitObservable(observable, subscriber);
     }

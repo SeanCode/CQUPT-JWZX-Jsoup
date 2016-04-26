@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import me.xyp.app.model.Grade;
@@ -40,6 +41,7 @@ public class GradeListHtmlParseFunc implements Func1<String, Grade> {
             childGrade.bxf = elements.get(10).text();
             childGrades.add(childGrade);
         }
+        Collections.reverse(childGrades);
         return new Grade(childGrades, weightAvg);
     }
 }

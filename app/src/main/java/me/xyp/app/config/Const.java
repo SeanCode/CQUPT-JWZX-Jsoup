@@ -29,7 +29,11 @@ public class Const {
 
     public static final String STU_PIC = "showstuPic.php?xh=";
 
-    public static final String TRAINING_PLAN_LIST = "docTreeIndex.php?dirId=000303";
+    public static final String ARTICLE_LIST = "docTreeIndex.php";
+
+    public static final String ARTICLE_CONTENT = "showfilecontent.php";
 
     public static final String URL_LOGIN = "http://jwzx.inner.redrock-team.com/login.php";
+
+    public static final String TRAINING_ARTICLE_LIST_DIR_ID = "000303";
 }

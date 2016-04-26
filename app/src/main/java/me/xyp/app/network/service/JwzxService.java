@@ -6,6 +6,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -30,7 +31,7 @@ public interface JwzxService {
                                            @Field("validationCode") String code);
 
     @GET(Const.PUBLIC_STU_COURSE_SCHEDULE)
-    Observable<ResponseBody> pubStuCourseSchedule(@Field("xh") String xh);
+    Observable<ResponseBody> pubStuCourseSchedule(@Query("xh") String xh);
 
     @GET(Const.COURSE_SCHEDULE)
     Observable<ResponseBody> courseSchedule();
@@ -50,7 +51,10 @@ public interface JwzxService {
     @GET(Const.STU_INFO)
     Observable<ResponseBody> studentInfo();
 
-    @GET(Const.TRAINING_PLAN_LIST)
-    Observable<ResponseBody> trainingPlanList();
+    @GET(Const.ARTICLE_LIST)
+    Observable<ResponseBody> articleList(@Query("dirId") String dirId);
+
+    @GET(Const.ARTICLE_CONTENT)
+    Observable<ResponseBody> articleContent(@Query("id") String id);
 
 }
