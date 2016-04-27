@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.orhanobut.logger.Logger;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +19,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.xyp.app.R;
+import me.xyp.app.model.Course;
+import me.xyp.app.network.RequestManager;
+import me.xyp.app.subscriber.SimpleSubscriber;
+import me.xyp.app.subscriber.SubscriberListener;
 import me.xyp.app.ui.adapter.TabPagerAdapter;
 
 /**
@@ -67,4 +73,16 @@ public class CourseContainerFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        RequestManager.getInstance().getUserCourseSchedule(new SimpleSubscriber<List<Course>>(getActivity(), new SubscriberListener<List<Course>>() {
+            @Override
+            public void onNext(List<Course> courses) {
+                for (Course c : courses) {
+                    Logger.d(c.toString());
+                }
+            }
+        }));
+    }
 }

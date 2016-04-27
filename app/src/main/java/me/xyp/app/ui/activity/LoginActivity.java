@@ -69,7 +69,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 //show code image
                 loadCodeToImage();
-                Util.toast(LoginActivity.this, "请登录");
             }
         }));
 
@@ -85,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestManager.getInstance().loginWithForm(stuNum,
                 passwordEditText.getText().toString(),
                 codeEditText.getText().toString(),
-                new SimpleSubscriber<>(this, true, false, new SubscriberListener<Result>() {
+                new SimpleSubscriber<>(this, true, true, false, new SubscriberListener<Result>() {
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
@@ -96,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onNext(Result result) {
 //                        Util.set(LoginActivity.this, Config.SP_KEY_STU_NUM, stuNum);
+                        Util.toast(LoginActivity.this, result.message);
                         LoginActivity.this.finish();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
 

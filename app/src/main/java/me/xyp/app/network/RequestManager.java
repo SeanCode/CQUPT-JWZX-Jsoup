@@ -2,7 +2,6 @@ package me.xyp.app.network;
 
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
-import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
 import org.jsoup.Jsoup;
 
@@ -12,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import io.rx_cache.internal.RxCache;
 import me.xyp.app.APP;
 import me.xyp.app.BuildConfig;
+import me.xyp.app.component.persistentcookiejar.SharedPrefsCookiePersistor;
 import me.xyp.app.config.Const;
 import me.xyp.app.model.Article;
 import me.xyp.app.model.ArticleBasic;
@@ -31,6 +31,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -100,45 +101,45 @@ public enum RequestManager {
         cookieJar.clear();
     }
 
-    public void index(Subscriber<String> subscriber) {
+    public Subscription index(Subscriber<String> subscriber) {
         Observable<String> observable = jwzxService.index()
                 .map(new ResponseBodyParseFunc(true, false))
                 .map(html -> Jsoup.parse(html).title());
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void login(Subscriber<String> subscriber) {
+    public Subscription login(Subscriber<String> subscriber) {
         Observable<String> observable = jwzxService.login()
                 .map(new ResponseBodyParseFunc(false, false))
                 .map(html -> Jsoup.parse(html).title());
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void loginWithForm(String stuNum, String psw, String code, Subscriber<Result> subscriber) {
+    public Subscription loginWithForm(String stuNum, String psw, String code, Subscriber<Result> subscriber) {
         Observable<Result> observable = jwzxService.loginWithForm(stuNum, psw, code)
                 .map(new ResponseBodyParseFunc(true, false))
                 .map(new LoginResultHtmlParseFunc());
 
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void getPublicStudentCourseSchedule(String stuNum, Subscriber<List<Course>> subscriber) {
+    public Subscription getPublicStudentCourseSchedule(String stuNum, Subscriber<List<Course>> subscriber) {
         Observable<List<Course>> observable = jwzxService.pubStuCourseSchedule(stuNum)
                 .map(new ResponseBodyParseFunc())
                 .map(new CourseTableHtmlParseFunc());
 
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void getUserCourseSchedule(Subscriber<List<Course>> subscriber) {
+    public Subscription getUserCourseSchedule(Subscriber<List<Course>> subscriber) {
         Observable<List<Course>> observable = jwzxService.courseSchedule()
                 .map(new ResponseBodyParseFunc())
                 .map(new CourseTableHtmlParseFunc());
 
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void getUserExamSchedule(boolean isMakeUp, Subscriber<List<Exam>> subscriber) {
+    public Subscription getUserExamSchedule(boolean isMakeUp, Subscriber<List<Exam>> subscriber) {
 
         Observable<ResponseBody> responseBodyObservable = isMakeUp ? jwzxService.makeUpSchedule() : jwzxService.examSchedule();
 
@@ -146,51 +147,45 @@ public enum RequestManager {
                 .map(new ResponseBodyParseFunc())
                 .map(new ExamScheduleHtmlParseFunc());
 
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void getGradeList(boolean shouldReturnAll, Subscriber<Grade> subscriber) {
+    public Subscription getGradeList(boolean shouldReturnAll, Subscriber<Grade> subscriber) {
         Observable<ResponseBody> responseBodyObservable = shouldReturnAll ? jwzxService.gradleListAll() : jwzxService.gradeList();
 
         Observable<Grade> observable = responseBodyObservable
                 .map(new ResponseBodyParseFunc())
                 .map(new GradeListHtmlParseFunc());
 
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void getStudentInfo(Subscriber<Student> subscriber) {
+    public Subscription getStudentInfo(Subscriber<Student> subscriber) {
         Observable<Student> observable = jwzxService.studentInfo()
                 .map(new ResponseBodyParseFunc())
                 .map(new StudentInfoHtmlParseFunc());
 
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void getArticleList(String dirId, Subscriber<List<ArticleBasic>> subscriber) {
+    public Subscription getArticleList(String dirId, Subscriber<List<ArticleBasic>> subscriber) {
         Observable<List<ArticleBasic>> observable = jwzxService.articleList(dirId)
                 .map(new ResponseBodyParseFunc(true, false))
                 .map(new ArticleListHtmlParseFunc());
 
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void getArticleContent(String id, Subscriber<Article> subscriber) {
+    public Subscription getArticleContent(String id, Subscriber<Article> subscriber) {
         Observable<Article> observable = jwzxService.articleContent(id)
                 .map(new ResponseBodyParseFunc())
                 .map(new ArticleContentHtmlParseFunc());
 
-        emitObservable(observable, subscriber);
+        return emitObservable(observable, subscriber);
     }
 
-    public void download(String url, Subscriber<ResponseBody> subscriber) {
-        Observable<ResponseBody> observable = jwzxService.download(url);
-        //todo parse
-        emitObservable(observable, subscriber);
-    }
-
-    private <T> void emitObservable(Observable<T> o, Subscriber<T> s) {
-        o.subscribeOn(Schedulers.io())
+    private <T> Subscription emitObservable(Observable<T> o, Subscriber<T> s) {
+        return o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s);

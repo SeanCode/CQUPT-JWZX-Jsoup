@@ -64,13 +64,12 @@ public class MainActivity extends BaseActivity
 
     private void attemptGetStuInfo() {
 
-        RequestManager.getInstance().getStudentInfo(new SimpleSubscriber<>(this, new SubscriberListener<Student>() {
+        RequestManager.getInstance().getStudentInfo(new SimpleSubscriber<>(this, false, false, false, new SubscriberListener<Student>() {
             @Override
             public void onNext(Student s) {
                 if (s != null) {
                     stuNameTextView.setText(s.name);
                     stuNumTextView.setText(s.stuNum);
-                    testJsoup();
 //                    loadAvatar(s.stuNum);
                 }
             }

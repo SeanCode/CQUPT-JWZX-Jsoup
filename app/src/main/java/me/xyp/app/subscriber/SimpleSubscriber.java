@@ -3,6 +3,8 @@ package me.xyp.app.subscriber;
 import android.content.Context;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -10,6 +12,9 @@ import java.net.UnknownHostException;
 import me.xyp.app.BuildConfig;
 import me.xyp.app.component.task.progress.ProgressCancelListener;
 import me.xyp.app.component.task.progress.ProgressDialogHandler;
+import me.xyp.app.event.LoginEvent;
+import me.xyp.app.network.exception.CatchLoginHtmlException;
+import me.xyp.app.network.exception.JsoupParaseException;
 import rx.Subscriber;
 
 /**
@@ -19,18 +24,20 @@ public class SimpleSubscriber<T> extends Subscriber<T> implements ProgressCancel
     private Context context;
     private SubscriberListener<T> listener;
     private ProgressDialogHandler mProgressDialogHandler;
+    private boolean shouldToast = true;
 
     public SimpleSubscriber(Context context, SubscriberListener<T> listener) {
         this(context, false, listener);
     }
 
     public SimpleSubscriber(Context context, boolean shouldShowProgressDialog, SubscriberListener<T> listener) {
-        this(context, shouldShowProgressDialog, false, listener);
+        this(context, true, shouldShowProgressDialog, false, listener);
     }
 
-    public SimpleSubscriber(Context context, boolean shouldShowProgressDialog, boolean isProgressDialogCancelable, SubscriberListener<T> listener) {
+    public SimpleSubscriber(Context context, boolean shouldToast, boolean shouldShowProgressDialog, boolean isProgressDialogCancelable, SubscriberListener<T> listener) {
         this.context = context;
         this.listener = listener;
+        this.shouldToast = shouldToast;
         if (shouldShowProgressDialog) {
             mProgressDialogHandler = new ProgressDialogHandler(context, this, isProgressDialogCancelable);
         }
@@ -54,21 +61,29 @@ public class SimpleSubscriber<T> extends Subscriber<T> implements ProgressCancel
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof SocketTimeoutException) {
-            Toast.makeText(context, "网络中断，请检查您的网络状态", Toast.LENGTH_SHORT).show();
-        } else if (e instanceof ConnectException) {
-            Toast.makeText(context, "网络异常，请检查您的网络状态", Toast.LENGTH_SHORT).show();
-        } else if (e instanceof UnknownHostException) {
-            Toast.makeText(context, "网络异常，无法连接教务在线", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        notifyError(e, this.shouldToast);
         if (BuildConfig.DEBUG) {
             e.printStackTrace();
         }
         dismissProgressDialog();
         if (listener != null) {
             listener.onError(e);
+        }
+    }
+
+    public void notifyError(Throwable e, boolean shouldToast) {
+        String message = e.getMessage();
+        if (e instanceof SocketTimeoutException) {
+            message = "网络异常，请检查您的网络状态";
+        } else if (e instanceof ConnectException) {
+            message = "网络异常，请检查您的网络状态";
+        } else if (e instanceof UnknownHostException) {
+            message = "网络异常，无法连接教务在线";
+        } else if (e instanceof CatchLoginHtmlException) {
+            EventBus.getDefault().post(new LoginEvent(LoginEvent.TYPE.COOKIE_INVALID));
+        }
+        if (shouldToast) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -90,13 +105,13 @@ public class SimpleSubscriber<T> extends Subscriber<T> implements ProgressCancel
         return this.context;
     }
 
-    private void showProgressDialog() {
+    public void showProgressDialog() {
         if (mProgressDialogHandler != null) {
             mProgressDialogHandler.obtainMessage(ProgressDialogHandler.SHOW_PROGRESS_DIALOG).sendToTarget();
         }
     }
 
-    private void dismissProgressDialog() {
+    public void dismissProgressDialog() {
         if (mProgressDialogHandler != null) {
             mProgressDialogHandler.obtainMessage(ProgressDialogHandler.DISMISS_PROGRESS_DIALOG).sendToTarget();
             mProgressDialogHandler = null;

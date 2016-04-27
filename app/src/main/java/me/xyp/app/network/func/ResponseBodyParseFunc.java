@@ -9,6 +9,8 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 
 import me.xyp.app.event.LoginEvent;
+import me.xyp.app.network.exception.CatchLoginHtmlException;
+import me.xyp.app.network.exception.JsoupParaseException;
 import okhttp3.ResponseBody;
 import rx.functions.Func1;
 
@@ -44,20 +46,15 @@ public class ResponseBodyParseFunc implements Func1<ResponseBody, String> {
 
                 if (shouldCheckLogin) {
                     String tableText = table.select("td").text();
-                    if (shouldReturnRawHtml) {
-                        Logger.xml(tableText);
-                    }
                     if (tableText.startsWith("教务在线登录")) {
-                        EventBus.getDefault().post(new LoginEvent(LoginEvent.TYPE.COOKIE_INVALID));
-                        return null;
+                        throw new CatchLoginHtmlException("当前尚未登录~");
                     }
                 }
             }
 
             return html;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new JsoupParaseException("数据解析异常");
         }
-        return "";
     }
 }

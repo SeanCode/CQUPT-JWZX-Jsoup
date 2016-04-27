@@ -15,9 +15,6 @@ import rx.Observable;
  */
 public interface JwzxService {
 
-    @GET
-    Observable<ResponseBody> download(@Url String url);
-
     @GET(Const.INDEX)
     Observable<ResponseBody> index();
 

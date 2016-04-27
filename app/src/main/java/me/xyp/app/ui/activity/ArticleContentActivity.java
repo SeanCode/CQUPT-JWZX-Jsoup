@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
