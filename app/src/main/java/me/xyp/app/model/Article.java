@@ -8,6 +8,8 @@ import java.util.List;
 public class Article extends ArticleBasic {
 
     public String contentHtml;
+    public String attachmentHtml;
+
     public List<Attachment> attachmentList;
 
     public static class Attachment {
