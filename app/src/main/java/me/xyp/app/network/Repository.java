@@ -8,6 +8,8 @@ import org.jsoup.Jsoup;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.rx_cache.DynamicKey;
+import io.rx_cache.EvictDynamicKey;
 import io.rx_cache.internal.RxCache;
 import me.xyp.app.APP;
 import me.xyp.app.BuildConfig;
@@ -38,7 +40,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cc on 16/4/23.
  */
-public enum RequestManager {
+public enum Repository {
 
     INSTANCE;
 
@@ -52,11 +54,11 @@ public enum RequestManager {
 
     private OkHttpClient okHttpClient;
 
-    public static RequestManager getInstance() {
+    public static Repository getInstance() {
         return INSTANCE;
     }
 
-    RequestManager() {
+    Repository() {
         okHttpClient = configureOkHttp(new OkHttpClient.Builder());
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -123,63 +125,84 @@ public enum RequestManager {
         return emitObservable(observable, subscriber);
     }
 
-    public Subscription getPublicStudentCourseSchedule(String stuNum, Subscriber<List<Course>> subscriber) {
-        Observable<List<Course>> observable = jwzxService.pubStuCourseSchedule(stuNum)
-                .map(new ResponseBodyParseFunc())
-                .map(new CourseTableHtmlParseFunc());
+    public Subscription getPublicStudentCourseSchedule(String stuNum, Subscriber<List<Course>> subscriber, final boolean update) {
+        Observable<List<Course>> observable = cacheProviders.getCoursesByStuNum(
+                getPublicStudentCourseSchedule(stuNum), new DynamicKey(stuNum), new EvictDynamicKey(update))
+                .map(new CacheMapFunc<>());
 
         return emitObservable(observable, subscriber);
     }
 
-    public Subscription getUserCourseSchedule(Subscriber<List<Course>> subscriber) {
-        Observable<List<Course>> observable = jwzxService.courseSchedule()
-                .map(new ResponseBodyParseFunc())
-                .map(new CourseTableHtmlParseFunc());
+    public Observable<List<Course>> getPublicStudentCourseSchedule(String stuNum) {
+        return jwzxService.pubStuCourseSchedule(stuNum)
+                .map(new PublicCourseResponseBodyParseFunc())
+                .map(new CourseTableHtmlParseFunc(true));
+    }
+
+    public Subscription getUserCourseSchedule(String stuNum, Subscriber<List<Course>> subscriber, boolean update) {
+        Observable<List<Course>> observable = cacheProviders.getCoursesByStuNum(
+                jwzxService.courseSchedule()
+                        .map(new ResponseBodyParseFunc())
+                        .map(new CourseTableHtmlParseFunc())
+                , new DynamicKey(stuNum), new EvictDynamicKey(update))
+                .map(new CacheMapFunc<>());
 
         return emitObservable(observable, subscriber);
     }
 
-    public Subscription getUserExamSchedule(boolean isMakeUp, Subscriber<List<Exam>> subscriber) {
+    public Subscription getUserExamSchedule(String stuNum, boolean isMakeUp, Subscriber<List<Exam>> subscriber, boolean update) {
 
-        Observable<ResponseBody> responseBodyObservable = isMakeUp ? jwzxService.makeUpSchedule() : jwzxService.examSchedule();
-
-        Observable<List<Exam>> observable = responseBodyObservable
-                .map(new ResponseBodyParseFunc())
-                .map(new ExamScheduleHtmlParseFunc());
-
-        return emitObservable(observable, subscriber);
-    }
-
-    public Subscription getGradeList(boolean shouldReturnAll, Subscriber<Grade> subscriber) {
-        Observable<ResponseBody> responseBodyObservable = shouldReturnAll ? jwzxService.gradleListAll() : jwzxService.gradeList();
-
-        Observable<Grade> observable = responseBodyObservable
-                .map(new ResponseBodyParseFunc())
-                .map(new GradeListHtmlParseFunc());
+        Observable<List<Exam>> observable = cacheProviders.getExamScheduleByStuNum(
+                (isMakeUp ? jwzxService.makeUpSchedule() : jwzxService.examSchedule())
+                        .map(new ResponseBodyParseFunc())
+                        .map(new ExamScheduleHtmlParseFunc())
+                , new DynamicKey(stuNum + (isMakeUp ? "-0" : "-1")), new EvictDynamicKey(update))
+                .map(new CacheMapFunc<>());
 
         return emitObservable(observable, subscriber);
     }
 
-    public Subscription getStudentInfo(Subscriber<Student> subscriber) {
-        Observable<Student> observable = jwzxService.studentInfo()
-                .map(new ResponseBodyParseFunc())
-                .map(new StudentInfoHtmlParseFunc());
+    public Subscription getGradeList(String stuNum, boolean shouldReturnAll, Subscriber<Grade> subscriber, boolean update) {
+
+        Observable<Grade> observable = cacheProviders.getGradeByStuNum(
+                (shouldReturnAll ? jwzxService.gradleListAll() : jwzxService.gradeList())
+                        .map(new ResponseBodyParseFunc())
+                        .map(new GradeListHtmlParseFunc())
+                , new DynamicKey(stuNum + (shouldReturnAll ? "-0" : "-1")), new EvictDynamicKey(update))
+                .map(new CacheMapFunc<>());
 
         return emitObservable(observable, subscriber);
     }
 
-    public Subscription getArticleList(String dirId, Subscriber<List<ArticleBasic>> subscriber) {
-        Observable<List<ArticleBasic>> observable = jwzxService.articleList(dirId)
-                .map(new ResponseBodyParseFunc(true, false))
-                .map(new ArticleListHtmlParseFunc());
+    public Subscription getStudentInfo(String stuNum, Subscriber<Student> subscriber, boolean update) {
+        Observable<Student> observable = cacheProviders.getStudentInfoByStuNum(
+                jwzxService.studentInfo()
+                        .map(new ResponseBodyParseFunc())
+                        .map(new StudentInfoHtmlParseFunc())
+                , new DynamicKey(stuNum), new EvictDynamicKey(update))
+                .map(new CacheMapFunc<>());
 
         return emitObservable(observable, subscriber);
     }
 
-    public Subscription getArticleContent(String id, Subscriber<Article> subscriber) {
-        Observable<Article> observable = jwzxService.articleContent(id)
-                .map(new ResponseBodyParseFunc())
-                .map(new ArticleContentHtmlParseFunc());
+    public Subscription getArticleList(String dirId, Subscriber<List<ArticleBasic>> subscriber, boolean update) {
+        Observable<List<ArticleBasic>> observable = cacheProviders.getArticleBasicListByDirId(
+                jwzxService.articleList(dirId)
+                        .map(new ResponseBodyParseFunc(true, false))
+                        .map(new ArticleListHtmlParseFunc())
+                , new DynamicKey(dirId), new EvictDynamicKey(update))
+                .map(new CacheMapFunc<>());
+
+        return emitObservable(observable, subscriber);
+    }
+
+    public Subscription getArticleContent(String id, Subscriber<Article> subscriber, boolean update) {
+        Observable<Article> observable = cacheProviders.getArticleById(
+                jwzxService.articleContent(id)
+                        .map(new ResponseBodyParseFunc())
+                        .map(new ArticleContentHtmlParseFunc())
+                , new DynamicKey(id), new EvictDynamicKey(update))
+                .map(new CacheMapFunc<>());
 
         return emitObservable(observable, subscriber);
     }

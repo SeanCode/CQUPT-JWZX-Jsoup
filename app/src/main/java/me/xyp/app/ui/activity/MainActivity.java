@@ -19,23 +19,26 @@ import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
+import org.jsoup.helper.StringUtil;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.xyp.app.APP;
 import me.xyp.app.R;
 import me.xyp.app.config.Const;
 import me.xyp.app.event.LoginEvent;
 import me.xyp.app.model.Student;
-import me.xyp.app.network.RequestManager;
+import me.xyp.app.network.Repository;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
 import me.xyp.app.ui.fragment.CourseContainerFragment;
 import me.xyp.app.ui.fragment.ExamContainerFragment;
-import me.xyp.app.ui.fragment.GradeFragment;
+import me.xyp.app.ui.fragment.ExamGradeFragment;
 import me.xyp.app.util.Util;
 
-public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Bind(R.id.main_toolbar)
     Toolbar toolbar;
@@ -63,17 +66,20 @@ public class MainActivity extends BaseActivity
     }
 
     private void attemptGetStuInfo() {
+        String stuNum = APP.getStuNum();
+        if (!StringUtil.isBlank(stuNum)) {
 
-        RequestManager.getInstance().getStudentInfo(new SimpleSubscriber<>(this, false, false, false, new SubscriberListener<Student>() {
-            @Override
-            public void onNext(Student s) {
-                if (s != null) {
-                    stuNameTextView.setText(s.name);
-                    stuNumTextView.setText(s.stuNum);
+            Repository.getInstance().getStudentInfo(stuNum, new SimpleSubscriber<>(this, false, false, false, new SubscriberListener<Student>() {
+                @Override
+                public void onNext(Student s) {
+                    if (s != null) {
+                        stuNameTextView.setText(s.name);
+                        stuNumTextView.setText(s.stuNum);
 //                    loadAvatar(s.stuNum);
+                    }
                 }
-            }
-        }));
+            }), false);
+        }
     }
 
     private void loadAvatar(String stuNum) {
@@ -81,7 +87,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void testJsoup() {
-        RequestManager.getInstance().index(new SimpleSubscriber<>(this, new SubscriberListener<String>() {
+        Repository.getInstance().index(new SimpleSubscriber<>(this, new SubscriberListener<String>() {
 
             @Override
             public void onNext(String s) {
@@ -113,7 +119,7 @@ public class MainActivity extends BaseActivity
 
         onNavigationItemSelected(itemDefault);
 
-        picasso = new Picasso.Builder(this).downloader(new OkHttp3Downloader(RequestManager.getInstance().getOkHttpClient())).build();
+        picasso = new Picasso.Builder(this).downloader(new OkHttp3Downloader(Repository.getInstance().getOkHttpClient())).build();
 
     }
 
@@ -142,6 +148,8 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_clear_cache) {
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -163,7 +171,7 @@ public class MainActivity extends BaseActivity
                 updateTitle("考试安排");
                 break;
             case R.id.nav_manage:
-                fragment = new GradeFragment();
+                fragment = new ExamGradeFragment();
                 updateTitle("考试成绩");
                 break;
             default:

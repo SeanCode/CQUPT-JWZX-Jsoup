@@ -3,74 +3,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.fragment.GradeFragment">
+    tools:context=".ui.fragment.ExamGradeFragment">
 
-    <TextView
-        android:id="@+id/exam_grade_weight"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/exam_grade_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:text="课程平均成绩级点参考：" />
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="6dp"
-        android:paddingTop="6dp">
-
-        <TextView
-            android:id="@+id/item_grade_name_text_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:ellipsize="end"
-            android:gravity="center|start"
-            android:paddingLeft="16dp"
-            android:text="名称"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/item_grade_property_text_view"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:text="类型"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/item_grade_score_text_view"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="分数"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/exam_grade_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:text="课程平均成绩级点参考：" />
 
-        <TextView
-            android:id="@+id/item_grade_weight_text_view"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="绩点"
-            android:textColor="@color/colorPrimary"
-            android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="6dp"
+                android:paddingTop="6dp">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/item_grade_name_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:ellipsize="end"
+                    android:gravity="center|start"
+                    android:paddingLeft="16dp"
+                    android:text="名称"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/exam_grade_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/item_grade_property_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="类型"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
 
-    </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:id="@+id/item_grade_score_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="分数"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
 
+                <TextView
+                    android:id="@+id/item_grade_weight_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="绩点"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/exam_grade_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

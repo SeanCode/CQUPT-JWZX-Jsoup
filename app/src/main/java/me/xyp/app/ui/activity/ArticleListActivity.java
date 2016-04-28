@@ -9,11 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -23,7 +19,7 @@ import me.xyp.app.R;
 import me.xyp.app.component.recyclerView.DividerItemDecoration;
 import me.xyp.app.component.recyclerView.RecyclerItemClickListener;
 import me.xyp.app.model.ArticleBasic;
-import me.xyp.app.network.RequestManager;
+import me.xyp.app.network.Repository;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
 import me.xyp.app.ui.adapter.ArticleListAdapter;
@@ -58,9 +54,9 @@ public class ArticleListActivity extends BaseActivity {
         initView();
     }
 
-    private void getArticleList() {
+    private void getArticleList(boolean update) {
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> RequestManager.getInstance().getArticleList(dirId, new SimpleSubscriber<>(ArticleListActivity.this, new SubscriberListener<List<ArticleBasic>>() {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> Repository.getInstance().getArticleList(dirId, new SimpleSubscriber<>(ArticleListActivity.this, new SubscriberListener<List<ArticleBasic>>() {
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
@@ -83,7 +79,7 @@ public class ArticleListActivity extends BaseActivity {
             public void onNext(List<ArticleBasic> articleBasics) {
                 adapter.setList(articleBasics);
             }
-        })), 500);
+        }), update), 500);
     }
 
     private void initDataWithIntent() {
@@ -108,10 +104,10 @@ public class ArticleListActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, (view, position) -> showArticleContent(adapter.getItem(position))));
 
-        swipeRefreshLayout.setOnRefreshListener(this::getArticleList);
+        swipeRefreshLayout.setOnRefreshListener(() -> getArticleList(true));
         swipeRefreshLayout.setEnabled(true);
 
-        getArticleList();
+        getArticleList(false);
     }
 
     private void showArticleContent(ArticleBasic articleBasic) {

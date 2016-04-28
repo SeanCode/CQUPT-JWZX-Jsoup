@@ -9,14 +9,19 @@ import android.widget.TextView;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import org.jsoup.helper.StringUtil;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.xyp.app.APP;
 import me.xyp.app.R;
+import me.xyp.app.config.Config;
 import me.xyp.app.config.Const;
 import me.xyp.app.model.Student;
-import me.xyp.app.network.RequestManager;
+import me.xyp.app.network.Repository;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
+import me.xyp.app.util.Util;
 
 public class StudentInfoActivity extends BaseActivity {
 
@@ -60,32 +65,34 @@ public class StudentInfoActivity extends BaseActivity {
             ab.setHomeButtonEnabled(true);
             ab.setDisplayHomeAsUpEnabled(true);
         }
-        picasso = new Picasso.Builder(this).downloader(new OkHttp3Downloader(RequestManager.getInstance().getOkHttpClient())).build();
+        picasso = new Picasso.Builder(this).downloader(new OkHttp3Downloader(Repository.getInstance().getOkHttpClient())).build();
 
     }
 
     private void getStudentInfo() {
+        if (!StringUtil.isBlank(APP.getStuNum())) {
 
-        RequestManager.getInstance().getStudentInfo(new SimpleSubscriber<>(this, new SubscriberListener<Student>() {
-            @Override
-            public void onNext(Student s) {
-                if (s != null) {
+            Repository.getInstance().getStudentInfo(APP.getStuNum(), new SimpleSubscriber<>(this, new SubscriberListener<Student>() {
+                @Override
+                public void onNext(Student s) {
+                    if (s != null) {
 
-                    nameTextView.setText(s.name);
-                    numTextView.setText(s.stuNum);
-                    classTextView.setText(s.classNum);
-                    genderTextView.setText(s.gender);
-                    birthdayTextView.setText(s.birthday);
-                    collegeTextView.setText(s.college);
-                    majorTextView.setText(s.major);
-                    majorPeriodTextView.setText(s.majorPeriod);
-                    gradeTextView.setText(s.grade);
-                    majorKindTextView.setText(s.majorKind);
+                        nameTextView.setText(s.name);
+                        numTextView.setText(s.stuNum);
+                        classTextView.setText(s.classNum);
+                        genderTextView.setText(s.gender);
+                        birthdayTextView.setText(s.birthday);
+                        collegeTextView.setText(s.college);
+                        majorTextView.setText(s.major);
+                        majorPeriodTextView.setText(s.majorPeriod);
+                        gradeTextView.setText(s.grade);
+                        majorKindTextView.setText(s.majorKind);
 
-                    loadAvatar(s.stuNum);
+                        loadAvatar(s.stuNum);
+                    }
                 }
-            }
-        }));
+            }), false);
+        }
     }
 
     private void loadAvatar(String stuNum) {

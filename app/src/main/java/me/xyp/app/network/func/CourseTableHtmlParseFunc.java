@@ -16,10 +16,20 @@ import rx.functions.Func1;
  */
 public class CourseTableHtmlParseFunc implements Func1<String, List<Course>> {
 
+    private boolean isPublicCourse;
+
+    public CourseTableHtmlParseFunc() {
+        this(false);
+    }
+
+    public CourseTableHtmlParseFunc(boolean isPublicCourse) {
+        this.isPublicCourse = isPublicCourse;
+    }
+
     @Override
     public List<Course> call(String html) {
         List<Course> courses = new ArrayList<>();
-        Element table = Jsoup.parse(html).getElementsByTag("table").get(1);
+        Element table = Jsoup.parse(html).getElementsByTag("table").get(isPublicCourse ? 0 : 1);
         Elements trs = table.getElementsByTag("tr");
         trs.remove(0);//remove table head
         int hash_lesson, hash_day;

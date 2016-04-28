@@ -19,7 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.xyp.app.R;
 import me.xyp.app.model.Article;
-import me.xyp.app.network.RequestManager;
+import me.xyp.app.network.Repository;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
 
@@ -77,7 +77,7 @@ public class ArticleContentActivity extends BaseActivity {
 
     private void getArticleContent() {
         if (id != null) {
-            RequestManager.getInstance().getArticleContent(id, new SimpleSubscriber<>(this, new SubscriberListener<Article>() {
+            Repository.getInstance().getArticleContent(id, new SimpleSubscriber<>(this, new SubscriberListener<Article>() {
 
                 @Override
                 public void onNext(Article article) {
@@ -117,7 +117,7 @@ public class ArticleContentActivity extends BaseActivity {
                         }));
                     }
                 }
-            }));
+            }), false);
         }
     }
 

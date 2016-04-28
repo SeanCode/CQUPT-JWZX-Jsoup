@@ -5,10 +5,16 @@
     android:orientation="vertical"
     tools:context="me.xyp.app.ui.fragment.ExamScheduleFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/exam_schedule_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/exam_schedule_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:foreground="?attr/selectableItemBackground" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/exam_schedule_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:foreground="?attr/selectableItemBackground" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

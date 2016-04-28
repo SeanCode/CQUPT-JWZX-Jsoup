@@ -15,10 +15,12 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.xyp.app.APP;
 import me.xyp.app.R;
+import me.xyp.app.config.Config;
 import me.xyp.app.config.Const;
 import me.xyp.app.model.Result;
-import me.xyp.app.network.RequestManager;
+import me.xyp.app.network.Repository;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
 import me.xyp.app.util.Util;
@@ -57,13 +59,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void init() {
 
-        RequestManager.getInstance().clearCookie();
+        Repository.getInstance().clearCookie();
+        APP.clearStuNum();
+        Util.set(this, Config.SP_KEY_STU_NUM, null);
 
-        //use okhttp client in {@link RequestManager}
-        picasso = new Picasso.Builder(this).downloader(new OkHttp3Downloader(RequestManager.getInstance().getOkHttpClient())).build();
+        //use okhttp client in {@link Repository}
+        picasso = new Picasso.Builder(this).downloader(new OkHttp3Downloader(Repository.getInstance().getOkHttpClient())).build();
 
         //make sure there exist cookie
-        RequestManager.getInstance().login(new SimpleSubscriber<>(this, new SubscriberListener<String>() {
+        Repository.getInstance().login(new SimpleSubscriber<>(this, new SubscriberListener<String>() {
             @Override
             public void onNext(String s) {
 
@@ -81,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void attemptLogin() {
         String stuNum = stuNumEditText.getText().toString();
-        RequestManager.getInstance().loginWithForm(stuNum,
+        Repository.getInstance().loginWithForm(stuNum,
                 passwordEditText.getText().toString(),
                 codeEditText.getText().toString(),
                 new SimpleSubscriber<>(this, true, true, false, new SubscriberListener<Result>() {
@@ -94,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(Result result) {
-//                        Util.set(LoginActivity.this, Config.SP_KEY_STU_NUM, stuNum);
+                        Util.set(LoginActivity.this, Config.SP_KEY_STU_NUM, stuNum);
                         Util.toast(LoginActivity.this, result.message);
                         LoginActivity.this.finish();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
