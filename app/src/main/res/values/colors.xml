@@ -16,4 +16,17 @@
 
     <color name="body_text_1_inverse">#deffffff</color>
     <color name="body_text_2_inverse">#8affffff</color>
+
+    <color name="theme_accent_2">#f76060</color>
+
+    <!-- 87% von #000000 -> DE -->
+    <color name="drawer_primary_text">#DE000000</color>
+    <!-- 54% von #000000 -> 8A -->
+    <color name="drawer_secondary_text">#8A000000</color>
+    <!-- 26% von #000000 -> 42 -->
+    <color name="drawer_hint_text">#42000000</color>
+    <!-- 12% von #000000 -> 1F -->
+    <color name="drawer_divider">#1F000000</color>
+
+    <color name="data_light_black">#a9a9a9</color>
 </resources>

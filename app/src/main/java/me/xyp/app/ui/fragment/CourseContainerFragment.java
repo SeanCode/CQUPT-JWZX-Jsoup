@@ -3,6 +3,7 @@ package me.xyp.app.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -24,6 +25,7 @@ import me.xyp.app.network.Repository;
 import me.xyp.app.subscriber.SimpleSubscriber;
 import me.xyp.app.subscriber.SubscriberListener;
 import me.xyp.app.ui.adapter.TabPagerAdapter;
+import me.xyp.app.util.SchoolCalendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,10 +36,13 @@ public class CourseContainerFragment extends Fragment {
     ViewPager pager;
     @Bind(R.id.tab_course_tabs)
     TabLayout tabLayout;
+    @Bind(R.id.course_container_fab)
+    FloatingActionButton fab;
 
+    private int mNowWeek; // 当前周
     private TabPagerAdapter adapter;
     private List<String> titleList = new ArrayList<>();
-    private List<android.support.v4.app.Fragment> fragmentsList = new ArrayList<>();
+    private List<Fragment> fragmentsList = new ArrayList<>();
 
     public CourseContainerFragment() {
         // Required empty public constructor
@@ -48,6 +53,10 @@ public class CourseContainerFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         titleList.addAll(Arrays.asList(getResources().getStringArray(R.array.titles_weeks)));// 得到每周的标题
+        mNowWeek = new SchoolCalendar().getWeekOfTerm(); // 获取本周
+        if (mNowWeek <= 23 && mNowWeek >= 1) { // 将本周的标题换成“本周”
+            titleList.set(mNowWeek, "本周");
+        }
         for (int i = 0; i < titleList.size(); i++) { // 创建每周的课表Fragment存在list中
             CourseFragment temp = new CourseFragment();
             Bundle bundle = new Bundle();
@@ -69,28 +78,40 @@ public class CourseContainerFragment extends Fragment {
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setupWithViewPager(pager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        fab.setOnClickListener(v -> changeCurrentItem());
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    private void changeCurrentItem() {
+        int position = pager.getCurrentItem();
+        if (position != mNowWeek) {
+            setCurrentItem(mNowWeek);
+        } else if (position != 0) {
+            setCurrentItem(0);
+        }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        Repository.getInstance().getUserCourseSchedule(new SimpleSubscriber<List<Course>>(getActivity(), new SubscriberListener<List<Course>>() {
-//            @Override
-//            public void onNext(List<Course> courses) {
-//                for (Course c : courses) {
-//                    Logger.d(c.toString());
-//                }
-//            }
-//        }));
-        Repository.getInstance().getPublicStudentCourseSchedule("2013214151", new SimpleSubscriber<List<Course>>(getActivity(), new SubscriberListener<List<Course>>() {
-            @Override
-            public void onNext(List<Course> courses) {
-                for (Course c : courses) {
-                    Logger.d(c.toString());
-                }
-            }
-        }), false);
+        if (mNowWeek <= 18 && mNowWeek >= 1) {
+            setCurrentItem(mNowWeek); // 将tab滑到当前周
+        }
     }
+
+    private void setCurrentItem(int position) {
+
+        if (position > 18 && position < 1) {
+            position = 0;
+        }
+        pager.setCurrentItem(position, true);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
 }

@@ -146,9 +146,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_clear_cache) {
+        if (id == R.id.action_clear_cache) {
+            File[] files = getFilesDir().listFiles();
+            for (File file : files) {
+                file.delete();
+            }
             return true;
         }
 

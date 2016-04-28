@@ -5,7 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">设置</string>
-    <string name="action_clear_cache">清楚缓存</string>
+    <string name="action_clear_cache">清除缓存</string>
     <string name="action_download_attachment">下载附件</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -42,4 +42,34 @@
         <item>第十七周</item>
         <item>第十八周</item>
     </string-array>
+
+    <string-array name="schedule_weekday">
+        <item>星期一</item>
+        <item>星期二 </item>
+        <item>星期三</item>
+        <item>星期四</item>
+        <item>星期五</item>
+        <item>星期六</item>
+        <item>星期日</item>
+    </string-array>
+
+    <string-array name="course_weekdays">
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+        <item>七</item>
+    </string-array>
+
+    <string-array name="schedule_time">
+        <item>8:00 ~ 9:40  am</item>
+        <item>10:05 ~ 11:45  am</item>
+        <item>2:00 ~ 3:40  pm</item>
+        <item>4:05 ~ 5:45  pm</item>
+        <item>7:00 ~ 8:40  pm</item>
+        <item>8:50 ~ 10:30  pm</item>
+    </string-array>
+
 </resources>

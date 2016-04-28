@@ -49,7 +49,7 @@ public class CourseTableHtmlParseFunc implements Func1<String, List<Course>> {
                         int size = properties.size();
                         if (size > 6) {
                             Course course = new Course();
-                            course.hash_day = hash_day;
+                            course.hash_day = hash_day - 1;
                             course.hash_lesson = hash_lesson;
                             course.id = properties.get(0);
                             course.name = properties.get(1);
